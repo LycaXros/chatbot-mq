@@ -1,4 +1,5 @@
 using ChatBot.Core.Models;
+using ChatBot.Web;
 using ChatBot.Web.Areas.Identity;
 using ChatBot.Web.Data;
 using Microsoft.AspNetCore.Components;
@@ -11,9 +12,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+
+builder.Services.AddSqlServerDocker(builder.Configuration);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ChatUser>(options => options.SignIn.RequireConfirmedAccount = true)
