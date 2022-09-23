@@ -1,13 +1,10 @@
 using ChatBot.Core.Models;
-using ChatBot.Pages;
+using ChatBot.Pages.Services;
 using ChatBot.Pages.Areas.Identity;
 using ChatBot.Pages.Data;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
+using ChatBot.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +15,17 @@ builder.Services.AddSqlServerDocker(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ChatUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddSignalR();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddLocalServices();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -48,6 +50,17 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapBlazorHub();
+app.MapHub<ChatHub>("/chatHub");
 app.MapFallbackToPage("/_Host");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Chat}/{action=Index}/{id?}");
+    endpoints.MapRazorPages();
+    endpoints.MapHub<ChatHub>("/chatter");
+});
+
 
 app.Run();

@@ -8,23 +8,27 @@ namespace ChatBot.Web.Hubs
     public class ChatHub : Hub
     {
         private readonly ICommandService _command;
+        private readonly IMessageService _ms;
+        private readonly IUserService _userService;
 
-        public ChatHub(ICommandService command)
+        public ChatHub(ICommandService command, IMessageService ms, IUserService userService)
         {
             _command = command;
+            _ms = ms;
+            _userService = userService;
         }
 
 
-        public async void SendAll(ChatMessage chatMessage)
+        public async Task SendAll(ChatMessage chatMessage)
         {
 
             if (_command.IsCommand(chatMessage.Text))
             {
-                CommandInfo infos = _command.GetCommandInfos(chatMessage.Text);
+                var infos = _command.GetCommandInfos(chatMessage.Text);
 
                 await Broadcast(chatMessage);
 
-                if (infos.Error != null)
+                if (infos is not null && !string.IsNullOrEmpty(infos.Error))
                 {
                     await Broadcast(AdminMessage(infos.Error));
                 }
@@ -36,12 +40,13 @@ namespace ChatBot.Web.Hubs
             else
             {
 
-                //string userId = chatMessage.UserID;
-                //ChatUser chatUser = _userService.GetUser(userId);
-                //Message message = new Message(chatMessage.Text, chatUser);
-                //_messageService.AddMessage(message);
-                //chatMessage = chatMessage with { SentAt = message.SentAt };
-                //await Broadcast(chatMessage);
+                string userId = chatMessage.UserID;
+                var chatUser = await _userService.GetUser(userId);
+
+                Message message = new(chatMessage.Text, chatUser);
+                await _ms.AddMessage(message);
+                chatMessage = chatMessage with { SentAt = message.SentAt };
+                await Broadcast(chatMessage);
             }
         }
 

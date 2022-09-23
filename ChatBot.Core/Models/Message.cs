@@ -5,10 +5,11 @@ namespace ChatBot.Core.Models
     public class Message
     {
         public Message() { }
-        public Message(string text, ChatUser sender)
+        public Message(string text, ChatUser? sender)
         {
             this.Text = text;
-            this.Sender = sender;
+            if (sender is not null)
+                this.Sender = sender;
         }
 
         [Key]

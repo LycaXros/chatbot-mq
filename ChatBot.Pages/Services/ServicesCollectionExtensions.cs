@@ -1,9 +1,10 @@
-﻿using ChatBot.Pages.Data;
+﻿using ChatBot.Core.Interfaces;
+using ChatBot.Pages.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatBot.Pages
+namespace ChatBot.Pages.Services
 {
-    public static class ServicesExtra
+    public static class ServicesCollectionExtensions
     {
         public static IServiceCollection AddSqlServerDocker(this IServiceCollection services, ConfigurationManager configuration)
         {
@@ -17,6 +18,20 @@ namespace ChatBot.Pages
             return services;
         }
 
+        public static IServiceCollection AddLocalServices(this IServiceCollection services)
+        {
+            /* Web only services */
+            services.AddSingleton<ICommandService, CommandService>();
+
+            /* Database services */
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IUserService, UserService>();
+
+            /* Rabbit services */
+            //services.AddSingleton<IUserBotQueueProducer, UserBotQueueProducer>();
+            //services.AddHostedService<BotUsersQueueConsumer>();
+            return services;
+        }
 
         private static string GetDatabaseConnectionString(ConfigurationManager configuration)
         {

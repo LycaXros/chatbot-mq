@@ -1,0 +1,64 @@
+﻿@page "/chatroom"
+@using System.Security.Claims
+@using ChatBot.Core.Entities
+@model ChatBot.Pages.Pages.ChatRoomModel
+
+
+@{
+    Layout = "./_Layout.cshtml";
+     ViewData["Title"] = "Chat Room";
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    string userID = "", userName = "";
+    if (claimsIdentity != null)
+    {
+        var userIdClaim = claimsIdentity.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier);
+        if (userIdClaim != null)
+            userID = userIdClaim.Value;
+
+        var userNameClaim = claimsIdentity.Claims.FirstOrDefault(f => f.Type == ClaimTypes.Name);
+        if (userNameClaim != null)
+            userName = userNameClaim.Value;
+    }
+}
+
+<script type="text/javascript">
+    var loggedUserId = '@userID';
+    var loggedUserName = '@userName';
+</script>
+
+<h1>Real-time chat room</h1>
+
+<div id="messagesList">
+    @foreach (var message in Model.Messages)
+    {
+        string cssClass = "message";
+        if (message.UserID == userID)
+        {
+            cssClass = "message mine offset-7";
+        }
+        <div class="container">
+            <div class="row">
+                <div class="col-5 @cssClass">
+                    <p>@message.Text</p>
+                    <div class="row">
+                        <div class="col-6 sender">
+                            @message.UserName
+                        </div>
+                        <div class="col-6 time">
+                            At @message.SentAt.Date.ToShortDateString() - @message.SentAt.Date.ToShortTimeString()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="input-group mb-3">
+    <input type="text" id="messageInput" class="form-control" placeholder="Type your message" aria-label="Type your message" aria-describedby="basic-addon2">
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" id="sendButton" type="button">Button</button>
+    </div>
+</div>
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/chat.js"></script>
