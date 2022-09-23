@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Core", "ChatBot.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Bot", "ChatBot.Bot\ChatBot.Bot.csproj", "{B5E69E90-59D6-474E-B27D-725385CAE83F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBot.Pages", "ChatBot.Pages\ChatBot.Pages.csproj", "{B427159F-7A45-46BC-9D83-D10641FA92E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Pages", "ChatBot.Pages\ChatBot.Pages.csproj", "{B427159F-7A45-46BC-9D83-D10641FA92E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

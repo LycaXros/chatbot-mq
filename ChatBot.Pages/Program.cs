@@ -53,14 +53,6 @@ app.MapBlazorHub();
 app.MapHub<ChatHub>("/chatHub");
 app.MapFallbackToPage("/_Host");
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Chat}/{action=Index}/{id?}");
-    endpoints.MapRazorPages();
-    endpoints.MapHub<ChatHub>("/chatter");
-});
 
 
 app.Run();

@@ -26,7 +26,7 @@ namespace ChatBot.Pages.Services
             return await _context
                 .Messages
                 .Include(i => i.Sender)
-                .OrderBy(o => o.SentAt)
+                .OrderByDescending(o => o.SentAt)
                 .Take(count)
                 .ToListAsync();
 

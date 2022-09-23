@@ -45,7 +45,7 @@ namespace ChatBot.Web.Hubs
 
                 Message message = new(chatMessage.Text, chatUser);
                 await _ms.AddMessage(message);
-                chatMessage = chatMessage with { SentAt = message.SentAt };
+                chatMessage = chatMessage with { SentAt = message.SentAt, UserName = chatUser?.DisplayName ?? chatMessage.UserName};
                 await Broadcast(chatMessage);
             }
         }
