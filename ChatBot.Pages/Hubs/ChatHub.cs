@@ -10,12 +10,16 @@ namespace ChatBot.Web.Hubs
         private readonly ICommandService _command;
         private readonly IMessageService _ms;
         private readonly IUserService _userService;
+        private readonly IBotStockRequest _stockRequest;
+        private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(ICommandService command, IMessageService ms, IUserService userService)
+        public ChatHub(ICommandService command, IMessageService ms, IUserService userService, IBotStockRequest stockRequest, ILogger<ChatHub> logger)
         {
             _command = command;
             _ms = ms;
             _userService = userService;
+            _stockRequest = stockRequest;
+            _logger = logger;
         }
 
 
@@ -28,13 +32,19 @@ namespace ChatBot.Web.Hubs
 
                 await Broadcast(chatMessage);
 
-                if (infos is not null && !string.IsNullOrEmpty(infos.Error))
+                if (infos is null)
+                {
+                    _logger.LogInformation("Information Invalid Command : {CommandText}", chatMessage.Text);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(infos.Error))
                 {
                     await Broadcast(AdminMessage(infos.Error));
                 }
                 else
                 {
-                    //_userBotQueueProducer.SearchStock(infos.Parameter);
+                    _stockRequest.SearchStock(infos.Parameter);
                 }
             }
             else
@@ -45,18 +55,19 @@ namespace ChatBot.Web.Hubs
 
                 Message message = new(chatMessage.Text, chatUser);
                 await _ms.AddMessage(message);
-                chatMessage = chatMessage with { SentAt = message.SentAt, UserName = chatUser?.DisplayName ?? chatMessage.UserName};
+                chatMessage = chatMessage with { SentAt = message.SentAt, UserName = chatUser?.DisplayName ?? chatMessage.UserName };
                 await Broadcast(chatMessage);
             }
         }
 
-        private ChatMessage AdminMessage(string text)
+        private static ChatMessage AdminMessage(string text)
         {
-            return new ChatMessage(DateTimeOffset.Now, text, "Administrator", "ADMIN" );
+            return new ChatMessage(DateTimeOffset.Now, text, "Administrator", "ADMIN");
         }
 
         private async Task Broadcast(ChatMessage chatMessage)
         {
+            _logger.LogInformation("Broadcasting message : {chatMessage}", chatMessage);
             await Clients.All.SendAsync("receive", chatMessage);
         }
     }

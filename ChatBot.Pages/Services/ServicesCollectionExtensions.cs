@@ -28,8 +28,8 @@ namespace ChatBot.Pages.Services
             services.AddScoped<IUserService, UserService>();
 
             /* Rabbit services */
-            //services.AddSingleton<IUserBotQueueProducer, UserBotQueueProducer>();
-            //services.AddHostedService<BotUsersQueueConsumer>();
+            services.AddSingleton<IBotStockRequest, BotStockRequest>();
+            services.AddHostedService<BotResponseCommunication>();
             return services;
         }
 

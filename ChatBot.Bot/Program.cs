@@ -1,25 +1,42 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿// See https://aka.ms/new-console-template for more information
+using ChatBot.Bot.Worker;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-// Add services to the container.
+Console.WriteLine("Hello, World!");
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+CancellationTokenSource Cts = new();
+using var loggerFactory = LoggerFactory.Create(builder =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    builder
+        .AddFilter("Microsoft", LogLevel.Warning)
+        .AddFilter("System", LogLevel.Warning)
+        .AddFilter("ChatBot.Program", LogLevel.Debug)
+        .AddConsole();
+});
+
+var logger = loggerFactory.CreateLogger<Program>();
+
+logger.LogInformation("PRobando el logger");
+
+string? rabbitConnection = Environment.GetEnvironmentVariable("RabbitConnectionString");
+if (string.IsNullOrWhiteSpace(rabbitConnection))
+{
+    var builder =
+        new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+    IConfigurationRoot configuration = builder.Build();
+    rabbitConnection = configuration.GetConnectionString("RabbitConnectionString");
 }
 
-app.UseHttpsRedirection();
+if (string.IsNullOrWhiteSpace(rabbitConnection))
+{
+    Console.WriteLine("RabbitsMQ Service connectionString is required!");
+    return;
+}
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+logger.LogInformation("Creating BotCommunication Service");
+var consumer = new BotCommunication(rabbitConnection, loggerFactory.CreateLogger<BotCommunication>());
+consumer.WaitForStockCode();
+await Task.Delay(Timeout.Infinite, Cts.Token).ConfigureAwait(false);
