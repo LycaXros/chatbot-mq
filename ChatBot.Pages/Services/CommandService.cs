@@ -1,14 +1,15 @@
 ﻿using ChatBot.Core.Entities;
 using ChatBot.Core.Interfaces;
 using ChatBot.Core.Utils;
+using LanguageExt;
 
 namespace ChatBot.Pages.Services
 {
     public class CommandService : ICommandService
     {
-        private CommandInfo _commandInfo = new CommandInfo(string.Empty, string.Empty, string.Empty);
+        private CommandInfo _commandInfo = new(string.Empty, string.Empty, string.Empty);
 
-        private List<string> _commands = new List<string>() { "/stock" };
+        private readonly List<string> _commands = new() { "/stock" };
 
         public string GetCommandError(string text)
         {
@@ -30,7 +31,7 @@ namespace ChatBot.Pages.Services
             return string.Empty;
         }
 
-        public CommandInfo? GetCommandInfos(string text)
+        public Option<CommandInfo> GetCommandInfos(string text)
         {
             string error = GetCommandError(text);
             if (string.IsNullOrEmpty(error))
@@ -39,7 +40,7 @@ namespace ChatBot.Pages.Services
                 string[] splitter = text.Split("=");
                 string command = splitter[0];
                 if (!_commands.Contains(command))
-                    return null;
+                    return Option<CommandInfo>.None;
 
                 string parameter = splitter[1];
                 _commandInfo = _commandInfo with { Command = command, Parameter = parameter };

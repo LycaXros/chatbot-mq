@@ -1,5 +1,6 @@
 ﻿
 using ChatBot.Core.Entities;
+using LanguageExt;
 
 namespace ChatBot.Core.Interfaces
 {
@@ -7,7 +8,7 @@ namespace ChatBot.Core.Interfaces
     public interface ICommandService
     {
         string GetCommandError(string text);
-        CommandInfo? GetCommandInfos(string text);
+        Option<CommandInfo> GetCommandInfos(string text);
         bool IsCommand(string text);
     }
 }

@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Core", "ChatBot.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Pages", "ChatBot.Pages\ChatBot.Pages.csproj", "{B427159F-7A45-46BC-9D83-D10641FA92E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBot.Bot", "ChatBot.Bot\ChatBot.Bot.csproj", "{4A2877D8-3DAF-4590-91CB-AD5E2FA35E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatBot.Bot", "ChatBot.Bot\ChatBot.Bot.csproj", "{4A2877D8-3DAF-4590-91CB-AD5E2FA35E6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatBot.Test", "ChatBot.Test\ChatBot.Test.csproj", "{A848DBDF-EE24-468C-BAE6-3779A93BD01C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{4A2877D8-3DAF-4590-91CB-AD5E2FA35E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A2877D8-3DAF-4590-91CB-AD5E2FA35E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A2877D8-3DAF-4590-91CB-AD5E2FA35E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A848DBDF-EE24-468C-BAE6-3779A93BD01C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A848DBDF-EE24-468C-BAE6-3779A93BD01C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A848DBDF-EE24-468C-BAE6-3779A93BD01C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A848DBDF-EE24-468C-BAE6-3779A93BD01C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

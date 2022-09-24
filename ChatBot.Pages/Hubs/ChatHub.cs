@@ -32,20 +32,22 @@ namespace ChatBot.Web.Hubs
 
                 await Broadcast(chatMessage);
 
-                if (infos is null)
+                infos.Match( async (info) =>
                 {
+                    if (!string.IsNullOrEmpty(info.Error))
+                    {
+                        await Broadcast(AdminMessage(info.Error));
+                    }
+                    else
+                    {
+                        _stockRequest.SearchStock(info.Parameter);
+                    }
+
+                }, () => {
                     _logger.LogInformation("Information Invalid Command : {CommandText}", chatMessage.Text);
                     return;
-                }
+                });
 
-                if (!string.IsNullOrEmpty(infos.Error))
-                {
-                    await Broadcast(AdminMessage(infos.Error));
-                }
-                else
-                {
-                    _stockRequest.SearchStock(infos.Parameter);
-                }
             }
             else
             {
