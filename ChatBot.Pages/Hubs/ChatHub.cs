@@ -3,7 +3,7 @@ using ChatBot.Core.Interfaces;
 using ChatBot.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ChatBot.Web.Hubs
+namespace ChatBot.Pages.Hubs
 {
     public class ChatHub : Hub
     {
@@ -54,6 +54,8 @@ namespace ChatBot.Web.Hubs
 
                 string userId = chatMessage.UserID;
                 var chatUser = await _userService.GetUser(userId);
+
+
 
                 Message message = new(chatMessage.Text, chatUser);
                 await _ms.AddMessage(message);

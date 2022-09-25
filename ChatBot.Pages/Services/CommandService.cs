@@ -7,7 +7,6 @@ namespace ChatBot.Pages.Services
 {
     public class CommandService : ICommandService
     {
-        private CommandInfo _commandInfo = new(string.Empty, string.Empty, string.Empty);
 
         private readonly List<string> _commands = new() { "/stock" };
 
@@ -33,6 +32,7 @@ namespace ChatBot.Pages.Services
 
         public Option<CommandInfo> GetCommandInfos(string text)
         {
+            CommandInfo commandInfo = new(string.Empty, string.Empty, string.Empty);
             string error = GetCommandError(text);
             if (string.IsNullOrEmpty(error))
             {
@@ -43,12 +43,12 @@ namespace ChatBot.Pages.Services
                     return Option<CommandInfo>.None;
 
                 string parameter = splitter[1];
-                _commandInfo = _commandInfo with { Command = command, Parameter = parameter };
+                commandInfo = commandInfo with { Command = command, Parameter = parameter };
 
             }
             else
-                _commandInfo = _commandInfo with { Error = error };
-            return _commandInfo;
+                commandInfo = commandInfo with { Error = error };
+            return commandInfo;
         }
 
         public bool IsCommand(string text)

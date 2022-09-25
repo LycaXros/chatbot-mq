@@ -1,8 +1,8 @@
 ﻿.message {
     font-size: 18px;
     font-weight: 500;
-    border: 5px solid #07c6f0;
-    background-color: #07c6f0;
+    border: 5px solid #ffd809;
+    background-color: #ffd809;
     color: rgb(0, 0, 0);
     border-radius: 12px;
     padding: 10px;
@@ -19,6 +19,6 @@
 }
 
 .message.mine {
-    border: 5px solid #02cf6c;
-    background-color: #02cf6c;
+    border: 5px solid #02cbbb;
+    background-color: #90cb00;
 }

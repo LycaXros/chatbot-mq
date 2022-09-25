@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 Console.WriteLine("Hello, World!");
 
-CancellationTokenSource Cts = new();
+CancellationTokenSource cts = new();
 using var loggerFactory = LoggerFactory.Create(builder =>
 {
     builder
@@ -17,16 +17,16 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 
 var logger = loggerFactory.CreateLogger<Program>();
 
-logger.LogInformation("PRobando el logger");
+logger.LogInformation("Probando el logger");
 
-string? rabbitConnection = Environment.GetEnvironmentVariable("RabbitConnectionString");
+var rabbitConnection = Environment.GetEnvironmentVariable("RabbitConnectionString");
 if (string.IsNullOrWhiteSpace(rabbitConnection))
 {
     var builder =
         new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-    IConfigurationRoot configuration = builder.Build();
+    var configuration = builder.Build();
     rabbitConnection = configuration.GetConnectionString("RabbitConnectionString");
 }
 
@@ -39,4 +39,5 @@ if (string.IsNullOrWhiteSpace(rabbitConnection))
 logger.LogInformation("Creating BotCommunication Service");
 var consumer = new BotCommunication(rabbitConnection, loggerFactory.CreateLogger<BotCommunication>());
 consumer.WaitForStockCode();
-await Task.Delay(Timeout.Infinite, Cts.Token).ConfigureAwait(false);
+consumer.BotMessageToUsers("Use following format to Request stock data '/stock=[Stock Name]'");
+await Task.Delay(Timeout.Infinite, cts.Token).ConfigureAwait(false);

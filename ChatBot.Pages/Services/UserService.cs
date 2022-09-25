@@ -1,6 +1,7 @@
 ﻿using ChatBot.Core.Interfaces;
 using ChatBot.Core.Models;
 using ChatBot.Pages.Data;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatBot.Pages.Services

@@ -7,14 +7,14 @@ namespace ChatBot.Test
 {
     public class CommandsTest
     {
-        private readonly ICommandService commandService = new CommandService();
+        private readonly ICommandService _commandService = new CommandService();
 
         [Fact]
         public void Command_IsNot_A_Command()
         {
             string command = "Not a Command";
 
-            var isCommand = commandService.IsCommand(command);
+            var isCommand = _commandService.IsCommand(command);
 
             Assert.False(isCommand);
 
@@ -25,7 +25,7 @@ namespace ChatBot.Test
         {
             string command = "/command";
 
-            var isCommand = commandService.IsCommand(command);
+            var isCommand = _commandService.IsCommand(command);
 
             Assert.True(isCommand);
 
@@ -36,7 +36,7 @@ namespace ChatBot.Test
         {
             string command = "/command";
 
-            var commandInfo = commandService.GetCommandError(command);
+            var commandInfo = _commandService.GetCommandError(command);
 
 
             Assert.Equal(commandInfo, Constants.ERROR_NULL_PARAMETER_INDICATOR);
@@ -49,7 +49,7 @@ namespace ChatBot.Test
             string command = "/command=";
             string msg = $"'{command.Replace("=","")}' {Constants.ERROR_COMMAND_NOT_FOUND}";
 
-            var commandInfo = commandService.GetCommandError(command);
+            var commandInfo = _commandService.GetCommandError(command);
 
 
             Assert.Equal(commandInfo, msg);
@@ -62,7 +62,7 @@ namespace ChatBot.Test
             string command = "/stock=";
             //$"'{command}' " + Constants.ERROR_COMMAND_NOT_FOUND;
 
-            var commandInfo = commandService.GetCommandError(command);
+            var commandInfo = _commandService.GetCommandError(command);
 
 
             Assert.Equal(commandInfo, Constants.ERROR_NULL_PARAMETER);
@@ -73,7 +73,7 @@ namespace ChatBot.Test
         {
             string command = "command=bc";
 
-            var commandInfo = commandService.GetCommandError(command);
+            var commandInfo = _commandService.GetCommandError(command);
 
 
             Assert.Equal(commandInfo, Constants.ERROR_INVALID_FORMAT);
@@ -85,7 +85,7 @@ namespace ChatBot.Test
         {
             string command = "/stock=btc.v";
 
-            var commandInfo = commandService.GetCommandError(command);
+            var commandInfo = _commandService.GetCommandError(command);
 
 
             Assert.Equal(commandInfo, string.Empty);

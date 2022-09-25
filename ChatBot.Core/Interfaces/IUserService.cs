@@ -1,4 +1,5 @@
 ﻿using ChatBot.Core.Models;
+using LanguageExt;
 
 namespace ChatBot.Core.Interfaces
 {
