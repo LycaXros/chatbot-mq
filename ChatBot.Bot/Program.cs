@@ -39,5 +39,5 @@ if (string.IsNullOrWhiteSpace(rabbitConnection))
 logger.LogInformation("Creating BotCommunication Service");
 var consumer = new BotCommunication(rabbitConnection, loggerFactory.CreateLogger<BotCommunication>());
 consumer.WaitForStockCode();
-consumer.BotMessageToUsers("Use following format to Request stock data '/stock=[Stock Name]'");
+
 await Task.Delay(Timeout.Infinite, cts.Token).ConfigureAwait(false);
