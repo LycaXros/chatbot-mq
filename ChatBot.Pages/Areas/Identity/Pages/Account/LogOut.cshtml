@@ -1,0 +1,16 @@
+﻿@page
+@using ChatBot.Core.Models
+@using Microsoft.AspNetCore.Identity
+@attribute [IgnoreAntiforgeryToken]
+@inject SignInManager<ChatUser> SignInManager
+@functions {
+    public async Task<IActionResult> OnPost()
+    {
+        if (SignInManager.IsSignedIn(User))
+        {
+            await SignInManager.SignOutAsync();
+        }
+
+        return Redirect("~/");
+    }
+}

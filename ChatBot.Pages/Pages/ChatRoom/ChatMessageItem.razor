@@ -1,0 +1,33 @@
+﻿@using ChatBot.Core.Entities
+@using ChatBot.Core.Interfaces
+@inject IUserService _us;
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-5 @cssClass">
+            <p>@Message.Text</p>
+            <div class="row" style="font-weight:bold;">
+                <div class="col-6 sender">
+                    @Message.UserName
+                </div>
+                <div class="col-6 time">
+                    At @sentDate.ToShortDateString() - @sentDate.ToShortTimeString()
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ChatMessage Message { get; init; }
+    [Parameter]
+    public string UserId { get; init; }
+
+    private DateTime sentDate => Message.SentAt.DateTime;
+
+    private string cssClass => Message.UserID == UserId ? "message mine offset-7" : "message";
+
+}

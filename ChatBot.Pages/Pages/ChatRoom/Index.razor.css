@@ -1,0 +1,12 @@
+﻿
+
+#messagesList {
+    height: 50vh;
+    overflow-y: scroll;
+}
+
+h1 {
+    text-align: center;
+    padding-bottom: 10px;
+    font-family: monospace;
+}
