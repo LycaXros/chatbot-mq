@@ -24,10 +24,7 @@ namespace ChatBot.Pages.Services
             if (!_commands.Contains(command))
                 return $"'{command}' " + Constants.ERROR_COMMAND_NOT_FOUND;
 
-            if (string.IsNullOrWhiteSpace(param))
-                return Constants.ERROR_NULL_PARAMETER;
-
-            return string.Empty;
+            return string.IsNullOrWhiteSpace(param) ? Constants.ERROR_NULL_PARAMETER : string.Empty;
         }
 
         public Option<CommandInfo> GetCommandInfos(string text)
