@@ -48,7 +48,7 @@ services:
       - DBUSER=sa
       - ENGINE=mssql
       - RabbitConnectionString=amqp://admin:Admin123@rabbit:5672
-      - ASPNETCORE_ENVIRONMENT=Development 
+      #- ASPNETCORE_ENVIRONMENT=Development 
     links: 
       - db
       - rabbit

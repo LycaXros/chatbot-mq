@@ -2,8 +2,9 @@
     font-size: 18px;
     font-weight: 500;
     border: 5px solid #ffd809;
-    background-color: #ffd809;
+    background-color: #F2E880;
     color: rgb(0, 0, 0);
+    -ms-border-radius: 12px;
     border-radius: 12px;
     padding: 10px;
     margin-bottom: 10px;
@@ -18,7 +19,7 @@
     text-align: right;
 }
 
-.message.mine {
-    border: 5px solid #02cbbb;
-    background-color: #90cb00;
-}
+    .message.mine {
+        border: 5px solid #3F94A6;
+        background-color: #50D6F2;
+    }
