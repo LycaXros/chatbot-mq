@@ -10,6 +10,13 @@ Basic Chat bot, with Identity, RabbitMQ, SignalR, Docker
 - Command errors are handled by chat Administrator
 - Messages are ordered in descending manner by Time
 - Only the last 50 messages are displayed in the chat
+- Unit Test
+
+#### Bonus tasks that I have completed:
+
+- Use .NET identity for users authentication
+- Handle messages that are not understood or any exceptions raised within the bot.
+- Build an installer. ** This is an installer to use with Docker **
 
 ### Built with
 

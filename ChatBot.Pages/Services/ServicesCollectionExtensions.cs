@@ -1,5 +1,9 @@
 ﻿using ChatBot.Core.Interfaces;
+using ChatBot.Core.Models;
+using ChatBot.Pages.Areas.Identity;
 using ChatBot.Pages.Data;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatBot.Pages.Services
@@ -20,40 +24,46 @@ namespace ChatBot.Pages.Services
 
         public static IServiceCollection AddLocalServices(this IServiceCollection services)
         {
-            /* Web only services */
-            services.AddSingleton<ICommandService, CommandService>();
 
-            /* Database services */
+            // Add services to the container.
+
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddDefaultIdentity<ChatUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddSignalR();
+
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+      
+            services.AddSingleton<ICommandService, CommandService>();
+            
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IUserService, UserService>();
-
-            /* Rabbit services */
+            
             services.AddSingleton<IBotStockRequest, BotStockRequest>();
             services.AddHostedService<BotResponseCommunication>();
             return services;
         }
 
-        private static string GetDatabaseConnectionString(ConfigurationManager configuration)
+        private static string GetDatabaseConnectionString(IConfiguration configuration)
         {
-            // The next lines will help us to connect to a docker database instance
-            string connectionString = "";
+            var database = configuration["DBDATABASE"];
+            var host = configuration["DBHOST"];
+            var password = configuration["DBPASSWORD"];
+            var port = configuration["DBPORT"];
+            var user = configuration["DBUSER"];
 
-            string database = configuration["DBDATABASE"];
-            string host = configuration["DBHOST"];
-            string password = configuration["DBPASSWORD"];
-            string port = configuration["DBPORT"];
-            string user = configuration["DBUSER"];
-
-            // If any of the variables is null, get connectionString from appSettings.json
-            if (new List<string>() { database, host, password, port }.Any(s => s == null))
-            {
-                connectionString = configuration.GetConnectionString("DefaultConnection");
-            }
-            else
-            {
-                connectionString = $"Server={host}, {port};Database={database};User Id={user};Password={password};";
-            }
-            return connectionString;
+            return string.IsNullOrEmpty(database) 
+                   || string.IsNullOrEmpty(host) 
+                   || string.IsNullOrEmpty(password) 
+                   || string.IsNullOrEmpty(port) 
+                   || string.IsNullOrEmpty(user)
+                ? configuration.GetConnectionString("DefaultConnection") 
+                : $"Server={host}, {port};Database={database};User Id={user};Password={password};";
+         
         }
     }
 }

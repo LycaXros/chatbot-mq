@@ -34,15 +34,15 @@ namespace ChatBot.Pages.Hubs
 
                 infos.Match( async (info) =>
                 {
-                    if (!string.IsNullOrEmpty(info.Error))
+                    var (_, error, parameter) = info;
+                    if (!string.IsNullOrEmpty(error))
                     {
-                        await Broadcast(AdminMessage(info.Error));
+                        await Broadcast(AdminMessage(error));
                     }
                     else
                     {
-                        _stockRequest.SearchStock(info.Parameter);
+                        _stockRequest.SearchStock(parameter);
                     }
-
                 }, () => {
                     _logger.LogInformation("Information Invalid Command : {CommandText}", chatMessage.Text);
                     return;
@@ -52,7 +52,7 @@ namespace ChatBot.Pages.Hubs
             else
             {
 
-                string userId = chatMessage.UserID;
+                var userId = chatMessage.UserID;
                 var chatUser = await _userService.GetUser(userId);
 
 
