@@ -43,7 +43,7 @@ namespace ChatBot.Pages.Services
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IUserService, UserService>();
             
-            services.AddSingleton<IBotStockRequest, BotStockRequest>();
+            services.AddSingleton<IBotCommandRequest, BotCommandRequest>();
             services.AddHostedService<BotResponseCommunication>();
             return services;
         }

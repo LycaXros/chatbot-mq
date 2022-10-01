@@ -1,0 +1,7 @@
+Some small comments.
+
+API url is hardcoded, it's recommended to move to a config.
+It's recommended to use an external library to parse the CSV instead of doing Split(",").
+It's recommended to rename IBotStockRequest interface and BotStockRequest class in order to support more commands also the method SearchStock on these and the queue BOTSTOCKQUEUE name.
+
+s

@@ -25,6 +25,7 @@ Basic Chat bot, with Identity, RabbitMQ, SignalR, Docker
 - IdentityServer
 - .NET 6
 - RabbitMQ
+- CsvHelper for CSV files managment
 
 ### Prerequisites
 

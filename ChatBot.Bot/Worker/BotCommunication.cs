@@ -1,6 +1,8 @@
-﻿using ChatBot.Core.Entities;
+﻿using System.Globalization;
+using ChatBot.Core.Entities;
 using ChatBot.Core.RabbitMQ;
 using ChatBot.Core.Utils;
+using CsvHelper;
 using Microsoft.Extensions.Logging;
 
 namespace ChatBot.Bot.Worker
@@ -13,12 +15,13 @@ namespace ChatBot.Bot.Worker
     {
 
         private readonly HttpClient _client;
+        private readonly string _stockApiUrl;
         private readonly ILogger<BotCommunication> _logger;
-        private const string Url = "https://stooq.com/q/l/?s=stock&f=sd2t2ohlcv&h&e=csv";
 
-        public BotCommunication(string connectionString, ILogger<BotCommunication> logger) : base(connectionString, logger)
+        public BotCommunication(string connectionString, string stockApiUrl, ILogger<BotCommunication> logger) : base(connectionString, logger)
         {
             _client = new HttpClient();
+            _stockApiUrl = stockApiUrl;
             _logger = logger;
         }
 
@@ -31,31 +34,36 @@ namespace ChatBot.Bot.Worker
         {
             try
             {
+                var url = $"{_stockApiUrl}?s={code}&f=sd2t2ohlcv&h&e=csv";
                 _logger.LogInformation("Requesting Stock!!!");
-                string response = await _client.GetStringAsync(Url.Replace("stock", code));
+                var response = await _client.GetStreamAsync(url);
+
+                using var reader = new StreamReader(response);
+                using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                if (!await csvReader.ReadAsync()) throw new Exception("Could Not Read the File");
+
+                var item = csvReader.GetRecord<StockData>();
+
+                var raw = csvReader.GetRecord<object>();
+
 
                 _logger.LogInformation("Response of stock {stock} on {method} method : {data}",
                     code,
                     nameof(GetStockMessage),
-                    response);
-                
-                var lines = response.Split('\n');
-                var secondLine = lines[1];
+                    raw);
 
-                var properties = secondLine.Split(",").ToList();
-                _logger.LogInformation("Found Data: {properties}", properties);
+                if (item is not null && item.Close != "N/D")
+                {
 
-                string stockName = properties.First();
-                properties.Reverse();
-                string closePrice = properties[1];
-                if (closePrice == "N/D")
-                    throw new Exception("Not found!");
+                    return $"{item.Symbol} quote is ${item.Close} per share";
+                }
 
-                return $"{stockName} quote is ${closePrice} per share";
+                throw new Exception("Not found!");
+
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("Error trying to get stock \"{code}\": {message}", code, ex.Message );
+                _logger.LogInformation("Error trying to get stock \"{code}\": {message}", code, ex.Message);
 
                 return $"Error trying to get stock \"{code}\": " + ex.Message;
             }
@@ -64,13 +72,20 @@ namespace ChatBot.Bot.Worker
         public void WaitForStockCode()
         {
             _logger.LogInformation($"Setting Consume Queue Method on function {nameof(WaitForStockCode)}");
-            Consume<string>(Constants.USERS_QUEUE_NAME, ResolveStockCode);
+            Consume<CommandInfo>(Constants.BOT_QUEUE_NAME, ResolveStockCode);
         }
 
-        private async void ResolveStockCode(string code)
+        private async void ResolveStockCode(CommandInfo command)
         {
-            var message = await GetStockMessage(code);
-            BotMessageToUsers(message);
+            if (command.Command == Constants.StockCommand)
+            {
+                var message = await GetStockMessage(command.Parameter);
+                BotMessageToUsers(message);
+            }
+            else
+            {
+                _logger.LogInformation("CommandInfo {command} is not a Stock Command", command);
+            }
         }
 
         /// <summary>
@@ -82,7 +97,7 @@ namespace ChatBot.Bot.Worker
             ChatMessage chatMessage = new(DateTimeOffset.Now, message, Constants.BOT_NAME, Constants.BOT_NAME);
 
             _logger.LogInformation("Sending Chat Message: {msg}", chatMessage);
-            Produce(Constants.BOT_QUEUE_NAME, chatMessage);
+            Produce(Constants.USERS_QUEUE_NAME, chatMessage);
         }
 
     }

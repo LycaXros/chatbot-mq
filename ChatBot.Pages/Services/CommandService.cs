@@ -8,7 +8,7 @@ namespace ChatBot.Pages.Services
     public class CommandService : ICommandService
     {
 
-        private readonly List<string> _commands = new() { "/stock" };
+        private readonly List<string> _commands = new() { Constants.StockCommand };
 
         public string GetCommandError(string text)
         {
@@ -27,9 +27,9 @@ namespace ChatBot.Pages.Services
             return string.IsNullOrWhiteSpace(param) ? Constants.ERROR_NULL_PARAMETER : string.Empty;
         }
 
-        public Option<CommandInfo> GetCommandInfos(string text)
+        public Option<CommandInfoError> GetCommandInfos(string text)
         {
-            CommandInfo commandInfo = new(string.Empty, string.Empty, string.Empty);
+            CommandInfoError commandInfoError = new(string.Empty, string.Empty, string.Empty);
             string error = GetCommandError(text);
             if (string.IsNullOrEmpty(error))
             {
@@ -37,15 +37,15 @@ namespace ChatBot.Pages.Services
                 string[] splitter = text.Split("=");
                 string command = splitter[0];
                 if (!_commands.Contains(command))
-                    return Option<CommandInfo>.None;
+                    return Option<CommandInfoError>.None;
 
                 string parameter = splitter[1];
-                commandInfo = commandInfo with { Command = command, Parameter = parameter };
+                commandInfoError = commandInfoError with { Command = command, Parameter = parameter };
 
             }
             else
-                commandInfo = commandInfo with { Error = error };
-            return commandInfo;
+                commandInfoError = commandInfoError with { Error = error };
+            return commandInfoError;
         }
 
         public bool IsCommand(string text)
