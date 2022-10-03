@@ -28,7 +28,7 @@ namespace ChatBot.Pages.Services
 
         private void WaitForBotResponse()
         {
-            _service.Consume<ChatMessage>(Constants.BOT_QUEUE_NAME, async (botMsg) =>
+            _service.Consume<ChatMessage>(Constants.USERS_QUEUE_NAME, async (botMsg) =>
             {
                 await _hubContext.Clients.All.SendAsync("receive", botMsg);
             });

@@ -10,15 +10,15 @@ namespace ChatBot.Pages.Hubs
         private readonly ICommandService _command;
         private readonly IMessageService _ms;
         private readonly IUserService _userService;
-        private readonly IBotStockRequest _stockRequest;
+        private readonly IBotCommandRequest _commandRequest;
         private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(ICommandService command, IMessageService ms, IUserService userService, IBotStockRequest stockRequest, ILogger<ChatHub> logger)
+        public ChatHub(ICommandService command, IMessageService ms, IUserService userService, IBotCommandRequest commandRequest, ILogger<ChatHub> logger)
         {
             _command = command;
             _ms = ms;
             _userService = userService;
-            _stockRequest = stockRequest;
+            _commandRequest = commandRequest;
             _logger = logger;
         }
 
@@ -34,14 +34,14 @@ namespace ChatBot.Pages.Hubs
 
                 infos.Match( async (info) =>
                 {
-                    var (_, error, parameter) = info;
+                    var (_, error, _) = info;
                     if (!string.IsNullOrEmpty(error))
                     {
                         await Broadcast(AdminMessage(error));
                     }
                     else
                     {
-                        _stockRequest.SearchStock(parameter);
+                        _commandRequest.ExecuteCommand(info);
                     }
                 }, () => {
                     _logger.LogInformation("Information Invalid Command : {CommandText}", chatMessage.Text);

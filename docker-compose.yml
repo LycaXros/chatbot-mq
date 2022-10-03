@@ -67,6 +67,7 @@ services:
       - rabbit
     environment: 
       - RabbitConnectionString=amqp://admin:Admin123@rabbit:5672
+      - StockApiUrl=https://stooq.com/q/l/
     links: 
       - rabbit
     networks:

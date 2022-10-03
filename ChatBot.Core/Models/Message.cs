@@ -2,7 +2,7 @@
 
 namespace ChatBot.Core.Models
 {
-    public class Message
+    public sealed class Message
     {
         public Message() { }
         public Message(string text, ChatUser? sender)
@@ -12,16 +12,15 @@ namespace ChatBot.Core.Models
                 this.Sender = sender;
         }
 
-        [Key]
-        public string Id { get; set; }
+        [Key] public string Id { get; set; } = default!;
 
         public DateTimeOffset SentAt { get; set; } = DateTimeOffset.Now;
 
         [Required]
-        public string Text { get; set; }
+        public string Text { get; set; } = default!;
 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = default!;
 
-        public virtual ChatUser Sender { get; set; }
+        public ChatUser Sender { get; set; } = default!;
     }
 }
