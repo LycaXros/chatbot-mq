@@ -18,6 +18,11 @@ Basic Chat bot, with Identity, RabbitMQ, SignalR, Docker
 - Handle messages that are not understood or any exceptions raised within the bot.
 - Build an installer. ** This is an installer to use with Docker **
 
+##### Corrections.
+
+- stooq URL, moved to appsettings and a Enviroment Variable.
+- Addition of CSVHelper for handleing of CSV Files.
+
 ### Built with
 
 - Docker
